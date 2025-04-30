@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Game </title>
+    <title>Online Game</title>
     <link rel="icon" href="https://i.ibb.co/2ZrGMjH/icon.jpg" type="image/png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -20,8 +20,10 @@
             align-items: center;
             height: 100vh;
             box-sizing: border-box;
-            position: relative; /* Added for positioning the profile circle */
+            position: relative;
+            flex-direction: column;
         }
+
         @keyframes gradientBG {
             0% {
                 background-position: 0 50%;
@@ -33,6 +35,7 @@
                 background-position: 0 50%;
             }
         }
+
         img.logo {
             max-width: 150px;
             height: auto;
@@ -46,10 +49,10 @@
             flex-direction: column;
             gap: 35px;
             align-items: center;
-            margin-top: 20px; /* Add some margin for spacing */
+            margin-top: 20px;
         }
+
         .startChoiceBtn {
-            /* Add the provided CSS styles for the buttons */
             appearance: none;
             background-color: transparent;
             border: 0.125em solid #1A1A1A;
@@ -58,49 +61,54 @@
             color: #3B3B3B;
             cursor: pointer;
             display: inline-block;
-            font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
             font-size: 16px;
             font-weight: 600;
-            line-height: normal;
-            margin: 0;
             min-height: 3.75em;
-            min-width: 0;
-            outline: none;
             padding: 1em 2.3em;
             text-align: center;
-            text-decoration: none;
             transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-            will-change: transform;
         }
+
         .startChoiceBtn:disabled {
             pointer-events: none;
         }
+
         .startChoiceBtn:hover {
             color: #fff;
             background-color: #1A1A1A;
             box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
             transform: translateY(-2px);
         }
+
         .startChoiceBtn:active {
             box-shadow: none;
             transform: translateY(0);
         }
 
+        /* Profile icon */
         .logo-container {
             position: absolute;
             top: 20px;
             right: 20px;
+        }
+
+        .profile-icon {
+            font-size: 28px;
+            color: #333;
+            background-color: #ddd;
+            border-radius: 50%;
+            padding: 6px;
             width: 40px;
             height: 40px;
+            text-align: center;
+            line-height: 28px;
+            transition: background 0.3s, color 0.3s;
         }
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            cursor: pointer;
+
+        .profile-icon:hover {
+            background-color: #1A1A1A;
+            color: #fff;
         }
 
         footer {
@@ -109,42 +117,35 @@
             color: #555;
             font-family: 'Verdana', sans-serif;
         }
-        footer a {
-            text-decoration: none;
-            font-weight: bold;
-            color: #555;
-        }
-        footer a:hover {
-            color: #555;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-
         <img class="logo" src="https://i.ibb.co/QXKTVHN/photo-2024-04-17-11-40-10.jpg" alt="logo">
-        <div class="startBtnContainer">
 
-            <div>
-                <form action="/game">
-                    <button style="font-variant: small-caps;" name="createPrivate" type="submit" class="startChoiceBtn">
-                        Startup with Friend
-                    </button>
-                </form>
-            </div>
-            <div>
-                <form action="/join">
-                    <button style="font-variant: small-caps;" name="joinPrivate" type="submit" class="startChoiceBtn">
-                        Joinup with Friend
-                    </button>
-                </form>
-            </div>
+        <div class="startBtnContainer">
+            <form action="/game">
+                <button style="font-variant: small-caps;" name="createPrivate" type="submit" class="startChoiceBtn">
+                    Startup with Friend
+                </button>
+            </form>
+            <form action="/join">
+                <button style="font-variant: small-caps;" name="joinPrivate" type="submit" class="startChoiceBtn">
+                    Joinup with Friend
+                </button>
+            </form>
         </div>
-        <div class="logo-container">
-            <a href="https://samarthags.cloud" target="_blank">
-                <img src="https://i.ibb.co/VvhfCCR/icon.png" alt="logo">
-            </a>
-        </div>
+
+        <footer>
+            Created & Developed by Samarth GS
+        </footer>
+    </div>
+
+    <!-- Profile icon linking to samarthags.in -->
+    <div class="logo-container">
+        <a href="https://samarthags.in" target="_blank" title="Visit Samarth GS">
+            <i class="fa fa-user profile-icon"></i>
+        </a>
     </div>
 </body>
 </html>

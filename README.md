@@ -3,9 +3,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-18.x-green?logo=node.js)  
 ![Socket.io](https://img.shields.io/badge/Socket.IO-RealTime-blue?logo=socket.io)  
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)  
-![GitHub stars](https://img.shields.io/github/stars/samarthags/Online-Multiplayer-Game?style=social)  
-![GitHub forks](https://img.shields.io/github/forks/samarthags/Online-Multiplayer-Game?style=social)  
-![GitHub issues](https://img.shields.io/github/issues/samarthags/Online-Multiplayer-Game)  
+  
 
 An **online multiplayer game** built with **Node.js** and **Socket.IO**, created by **Samarthags**.  
 This project demonstrates real-time communication, multiplayer interaction, and scalable server–client architecture.
@@ -111,5 +109,7 @@ This project is licensed under the MIT License – feel free to use, modify, and
 👨‍💻 Author
 
 Developed 💜 by Samarthags
-Website: 
+
+---
+
 https://samarthags.in

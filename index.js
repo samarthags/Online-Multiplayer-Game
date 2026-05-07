@@ -16,12 +16,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-/////////////////////////////////
-//There are 3 game type options//
-//-random                                           //
-//-createPrivate                           //
-//-joinPrivate                                   //
-/////////////////////////////////
 
 var gameType;
 

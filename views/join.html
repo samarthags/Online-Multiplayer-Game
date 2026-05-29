@@ -1,137 +1,251 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Samartha_Game</title>
-        <link rel="icon" href="https://i.ibb.co/2ZrGMjH/icon.jpg" type="image/png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>Join Game — Samarth GS Games</title>
+    <meta name="description" content="Enter the room code your friend shared and join the game instantly. No account needed — game.samarthags.in">
+    <meta name="author" content="Samarth GS">
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="https://i.ibb.co/2ZrGMjH/icon.jpg" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 
-    
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-    
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background: white;
-            background-size: 200% 100%;
-            animation: gradientBG 10s linear infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            box-sizing: border-box;
-            position: relative;
+        :root{
+            --bg:#080808;--surface:#101010;--surface2:#181818;
+            --border:#1e1e1e;--border2:#2a2a2a;
+            --text:#f0ede6;--muted:#555;--muted2:#888;
+            --accent:#d4f542;--accent-dim:rgba(212,245,66,0.1);
         }
-        
-        @keyframes gradientBG {
-            0% {
-                background-position: 0 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0 50%;
-            }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{
+            background:var(--bg);color:var(--text);
+            font-family:'Syne',sans-serif;
+            min-height:100vh;display:flex;flex-direction:column;
+            overflow-x:hidden;
         }
 
-        .container {
-            text-align: center; /* Center align contents */
+        /* GRID + GLOW */
+        .grid-bg{
+            position:fixed;inset:0;
+            background-image:
+                linear-gradient(rgba(212,245,66,0.035) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(212,245,66,0.035) 1px,transparent 1px);
+            background-size:64px 64px;pointer-events:none;z-index:0;
+        }
+        .glow-orb{
+            position:fixed;width:500px;height:500px;border-radius:50%;
+            background:radial-gradient(circle,rgba(212,245,66,0.06) 0%,transparent 70%);
+            top:-80px;left:50%;transform:translateX(-50%);
+            pointer-events:none;z-index:0;
         }
 
-        #enterCodeLabel {
-            margin-bottom: 20px; /* Add space below the text */
-            font-size: 18px; /* Increase font size */
-            border-bottom: 1px solid #ccc; /* Add border */
-            padding-bottom: 10px; /* Add padding below the text */
+        /* NAV */
+        nav{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            display:flex;align-items:center;justify-content:space-between;
+            padding:16px 40px;
+            border-bottom:1px solid var(--border);
+            background:rgba(8,8,8,0.88);backdrop-filter:blur(16px);
+        }
+        .nav-brand{
+            font-family:'DM Mono',monospace;font-size:12px;
+            color:var(--muted2);letter-spacing:0.1em;text-decoration:none;
+        }
+        .nav-brand span{color:var(--accent)}
+        .nav-back{
+            display:flex;align-items:center;gap:7px;
+            font-family:'DM Mono',monospace;font-size:11px;
+            color:var(--muted);text-decoration:none;
+            letter-spacing:0.06em;transition:color 0.2s;
+        }
+        .nav-back:hover{color:var(--text)}
+
+        /* MAIN */
+        main{
+            position:relative;z-index:1;flex:1;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            padding:100px 24px 60px;
         }
 
-        form {
-            margin-top: 20px; /* Add space above the form */
+        /* CARD */
+        .join-card{
+            width:100%;max-width:420px;
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:10px;padding:44px 40px;
+            position:relative;overflow:hidden;
+            animation:fadeUp 0.6s ease both;
+        }
+        .join-card::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:2px;
+            background:linear-gradient(90deg,var(--accent) 0%,transparent 100%);
         }
 
-        /* Style for text input */
-        input[type="tel"] {
-            padding: 10px; /* Increase padding */
-            border: 1px solid #ccc; /* Add border */
-            border-radius: 5px; /* Add border radius */
-            width: 200px; /* Set width */
+        /* ICON */
+        .card-icon{
+            width:52px;height:52px;border-radius:50%;
+            background:var(--accent-dim);border:1px solid rgba(212,245,66,0.2);
+            display:flex;align-items:center;justify-content:center;
+            font-size:20px;color:var(--accent);
+            margin:0 auto 24px;
         }
 
-        /* Style for submit button */
-        .startChoiceBtn {
-            appearance: none;
-            background-color: transparent;
-            border: 0.125em solid #1A1A1A;
-            border-radius: 0.9375em;
-            box-sizing: border-box;
-            color: #3B3B3B;
-            cursor: pointer;
-            display: inline-block;
-            font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-            font-size: 16px;
-            font-weight: 600;
-            line-height: normal;
-            margin: 20px 0; /* Add margin top and bottom */
-            min-height: 3.75em;
-            min-width: 0;
-            outline: none;
-            padding: 1em 2.3em;
-            text-align: center;
-            text-decoration: none;
-            transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-            will-change: transform;
+        /* TEXT */
+        .card-title{
+            font-size:26px;font-weight:800;letter-spacing:-0.02em;
+            text-align:center;margin-bottom:6px;
         }
-        
-        .startChoiceBtn:disabled {
-            pointer-events: none;
-        }
-        
-        .startChoiceBtn:hover {
-            color: #fff;
-            background-color: #1A1A1A;
-            box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-            transform: translateY(-2px);
-        }
-        
-        .startChoiceBtn:active {
-            box-shadow: none;
-            transform: translateY(0);
+        .card-sub{
+            font-family:'DM Mono',monospace;font-size:12px;font-weight:300;
+            color:var(--muted2);text-align:center;line-height:1.7;
+            margin-bottom:34px;
         }
 
-        /* Style for footer */
-        footer {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            color: #888;
+        /* LABEL */
+        .input-label{
+            font-family:'DM Mono',monospace;font-size:10px;
+            color:var(--accent);letter-spacing:0.18em;text-transform:uppercase;
+            display:block;margin-bottom:8px;
         }
-        
+
+        /* INPUT */
+        .code-input{
+            width:100%;
+            background:var(--surface2);
+            border:1px solid var(--border2);
+            border-radius:4px;
+            color:var(--text);
+            font-family:'DM Mono',monospace;
+            font-size:22px;
+            font-weight:400;
+            letter-spacing:0.18em;
+            padding:14px 18px;
+            outline:none;
+            text-align:center;
+            text-transform:uppercase;
+            transition:border-color 0.2s,box-shadow 0.2s;
+            -webkit-appearance:none;
+            margin-bottom:24px;
+        }
+        .code-input::placeholder{color:var(--muted);font-size:16px;letter-spacing:0.1em}
+        .code-input:focus{
+            border-color:var(--accent);
+            box-shadow:0 0 0 3px rgba(212,245,66,0.1);
+        }
+
+        /* SUBMIT */
+        .btn-join{
+            width:100%;
+            display:flex;align-items:center;justify-content:center;gap:10px;
+            background:var(--accent);color:#060606;
+            font-family:'Syne',sans-serif;font-size:14px;font-weight:800;
+            letter-spacing:0.06em;padding:15px;border-radius:3px;
+            border:none;cursor:pointer;
+            transition:transform 0.2s,box-shadow 0.2s;
+        }
+        .btn-join:hover{
+            transform:translateY(-2px);
+            box-shadow:0 10px 32px rgba(212,245,66,0.25);
+        }
+        .btn-join:active{transform:translateY(0)}
+
+        /* DIVIDER */
+        .divider{
+            display:flex;align-items:center;gap:12px;
+            margin:24px 0;
+        }
+        .divider::before,.divider::after{
+            content:'';flex:1;height:1px;background:var(--border);
+        }
+        .divider span{
+            font-family:'DM Mono',monospace;font-size:10px;
+            color:var(--muted);letter-spacing:0.1em;
+        }
+
+        /* BACK LINK */
+        .back-link{
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            font-family:'DM Mono',monospace;font-size:12px;
+            color:var(--muted);text-decoration:none;
+            transition:color 0.2s;
+        }
+        .back-link:hover{color:var(--text)}
+
+        /* FOOTER */
+        footer{
+            position:relative;z-index:1;
+            border-top:1px solid var(--border);padding:20px 40px;
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        .footer-copy{
+            font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);
+        }
+        .footer-copy a{color:var(--accent);text-decoration:none}
+        .footer-dev{
+            font-family:'DM Mono',monospace;font-size:11px;
+            color:var(--muted);text-decoration:none;transition:color 0.2s;
+            display:flex;align-items:center;gap:6px;
+        }
+        .footer-dev:hover{color:var(--accent)}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+        @media(max-width:500px){
+            nav{padding:14px 18px}
+            .join-card{padding:32px 22px}
+            footer{flex-direction:column;gap:10px;text-align:center}
+        }
     </style>
 </head>
 <body>
-    <div id="title"></div>
-    <div id="subtitle"></div>
-    <div class="divider"></div>
-    <div class="container">
-        <p style="font-variant: small-caps;">Enter the Room Code </p>
-                <p style="font-variant: small-caps;">That Your Friend Sent To You</p>
-        <form action="/game">
+<div class="grid-bg" aria-hidden="true"></div>
+<div class="glow-orb" aria-hidden="true"></div>
 
-            <br> <!-- Add line break -->
-            <input type="tel" id="gameCodeInput" class="form-control" name="gameCode">
-            <br> <!-- Add line break -->
-            <button class="startChoiceBtn btn btn-info" type="submit"style="font-variant: small-caps;">Join Game</button>
+<nav>
+    <a href="/" class="nav-brand">game.<span>samarthags</span>.in</a>
+    <a href="/" class="nav-back"><i class="fa fa-arrow-left"></i> Back to Home</a>
+</nav>
+
+<main>
+    <div class="join-card">
+        <div class="card-icon"><i class="fa fa-hashtag"></i></div>
+        <h1 class="card-title">Join Game</h1>
+        <p class="card-sub">Enter the room code<br>your friend sent you</p>
+
+        <form action="/game" method="GET">
+            <label for="gameCodeInput" class="input-label">Room Code</label>
+            <input
+                type="tel"
+                id="gameCodeInput"
+                name="gameCode"
+                class="code-input"
+                placeholder="_ _ _ _ _ _"
+                autocomplete="off"
+                maxlength="10"
+                inputmode="numeric"
+                required
+            >
+            <button type="submit" class="btn-join">
+                <i class="fa fa-sign-in"></i> Join Game
+            </button>
         </form>
+
+        <div class="divider"><span>or</span></div>
+
+        <a href="/game" class="back-link">
+            <i class="fa fa-plus-circle"></i> Start a new game instead
+        </a>
     </div>
-    <footer style="font-variant: small-caps;">Made With 💙 By Samartha Gs</footer>
-    <form action="/"></form>
+</main>
+
+<footer>
+    <p class="footer-copy">Made with 💙 by <a href="https://samarthags.in" target="_blank" rel="noopener">Samarth Gs</a></p>
+    <a href="https://samarthags.in" class="footer-dev" target="_blank" rel="noopener">
+        <i class="fa fa-user"></i> samarthags.in
+    </a>
+</footer>
 </body>
 </html>

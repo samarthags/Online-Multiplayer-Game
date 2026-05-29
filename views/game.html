@@ -1,45 +1,281 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Samartha_Game</title>
-     <link rel="icon" href="https://i.ibb.co/2ZrGMjH/icon.jpg" type="image/png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>Game Room — Samarth GS Games</title>
+    <meta name="description" content="Multiplayer Tic-Tac-Toe game room by Samarth GS. Play live with a friend in a private room.">
+    <meta name="author" content="Samarth GS">
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="https://i.ibb.co/2ZrGMjH/icon.jpg" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <!-- Game deps -->
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/animate.css">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
     <style>
-
-        /* Footer */
-        footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            margin-top: 55px;
-            font-size: 12px;
-            color: #555;
-            font-family: 'Verdana', sans-serif;
-            text-align: center;
+        :root{
+            --bg:#080808;--surface:#101010;--surface2:#181818;
+            --border:#1e1e1e;--border2:#2a2a2a;
+            --text:#f0ede6;--muted:#555;--muted2:#888;
+            --accent:#d4f542;--accent-dim:rgba(212,245,66,0.1);
+            --x-color:#d4f542;--o-color:#3be0cf;
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{
+            background:var(--bg);color:var(--text);
+            font-family:'Syne',sans-serif;
+            min-height:100vh;display:flex;flex-direction:column;
+            overflow-x:hidden;
         }
 
-        footer a {
-            text-decoration: none;
-            font-weight: bold;
-            color: #555;
+        /* BG */
+        .grid-bg{
+            position:fixed;inset:0;
+            background-image:
+                linear-gradient(rgba(212,245,66,0.03) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(212,245,66,0.03) 1px,transparent 1px);
+            background-size:64px 64px;pointer-events:none;z-index:0;
         }
 
-        footer a:hover {
-            color: #555;
+        /* NAV */
+        nav{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            display:flex;align-items:center;justify-content:space-between;
+            padding:14px 30px;
+            border-bottom:1px solid var(--border);
+            background:rgba(8,8,8,0.92);backdrop-filter:blur(16px);
+        }
+        .nav-brand{
+            font-family:'DM Mono',monospace;font-size:12px;
+            color:var(--muted2);letter-spacing:0.1em;text-decoration:none;
+        }
+        .nav-brand span{color:var(--accent)}
+        .nav-right{display:flex;align-items:center;gap:14px}
+        .nav-home{
+            display:flex;align-items:center;gap:6px;
+            font-family:'DM Mono',monospace;font-size:11px;
+            color:var(--muted);text-decoration:none;
+            letter-spacing:0.06em;transition:color 0.2s;
+        }
+        .nav-home:hover{color:var(--text)}
+
+        /* PAGE BODY */
+        .page{
+            position:relative;z-index:1;flex:1;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            padding:84px 20px 60px;
+        }
+
+        /* ─── LOADING / WAITING STATE ─── */
+        #loadingContainer{
+            display:flex;flex-direction:column;align-items:center;
+            text-align:center;animation:fadeUp 0.6s ease both;
+        }
+
+        .room-code-wrap{margin-bottom:32px}
+        .room-code-label{
+            font-family:'DM Mono',monospace;font-size:9px;
+            color:var(--accent);letter-spacing:0.22em;text-transform:uppercase;
+            margin-bottom:10px;
+        }
+        #roomId{
+            font-family:'DM Mono',monospace;font-size:36px;font-weight:400;
+            letter-spacing:0.22em;color:var(--text);
+            border:1px solid var(--border2);border-radius:6px;
+            background:var(--surface);padding:14px 28px;display:inline-block;
+            position:relative;
+        }
+        #roomId::after{
+            content:'';position:absolute;inset:-1px;border-radius:6px;
+            background:linear-gradient(135deg,rgba(212,245,66,0.08),transparent 60%);
+            pointer-events:none;
+        }
+
+        .waiting-title{
+            font-size:24px;font-weight:800;letter-spacing:-0.02em;
+            margin-bottom:8px;
+        }
+        #searchState{
+            font-family:'DM Mono',monospace;font-size:13px;font-weight:300;
+            color:var(--muted2);margin-bottom:32px;
+        }
+        .dots span{
+            display:inline-block;
+            animation:blink 1.4s ease infinite;
+            font-size:20px;color:var(--accent);
+        }
+        .dots span:nth-child(2){animation-delay:0.2s}
+        .dots span:nth-child(3){animation-delay:0.4s}
+        @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+
+        .copy-btn{
+            display:inline-flex;align-items:center;gap:9px;
+            background:var(--accent);color:#060606;
+            font-family:'Syne',sans-serif;font-size:13px;font-weight:800;
+            letter-spacing:0.05em;padding:13px 32px;border-radius:3px;
+            border:none;cursor:pointer;
+            transition:transform 0.2s,box-shadow 0.2s;
+        }
+        .copy-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(212,245,66,0.25)}
+        .copy-btn:active{transform:translateY(0)}
+        .copy-btn.copied{background:var(--surface2);color:var(--accent);border:1px solid var(--accent)}
+
+        .share-hint{
+            font-family:'DM Mono',monospace;font-size:11px;font-weight:300;
+            color:var(--muted);margin-top:14px;
+        }
+
+        /* ─── GAME STATE ─── */
+        #gameContainer{
+            display:none;
+            flex-direction:column;align-items:center;
+            width:100%;max-width:440px;
+            animation:fadeUp 0.5s ease both;
+        }
+
+        /* Player info bar */
+        #gameInfo{
+            width:100%;display:flex;
+            align-items:center;justify-content:space-between;
+            margin-bottom:20px;
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:6px;padding:12px 20px;
+        }
+        #player{
+            font-family:'DM Mono',monospace;font-size:12px;font-weight:400;
+            color:var(--muted2);letter-spacing:0.06em;
+        }
+        #player strong{color:var(--accent)}
+        #turn{
+            font-family:'DM Mono',monospace;font-size:11px;
+            color:var(--muted2);letter-spacing:0.06em;
+        }
+        #gameState{
+            font-family:'DM Mono',monospace;font-size:12px;
+            color:var(--text);letter-spacing:0.06em;
+        }
+
+        /* BOARD */
+        #TicTacToeBoard{
+            border-collapse:collapse;
+            border-radius:8px;overflow:hidden;
+            box-shadow:0 0 0 1px var(--border2);
+            background:var(--surface);
+            margin-bottom:20px;
+        }
+        #TicTacToeBoard .box{
+            width:120px;height:120px;
+            border:1px solid var(--border2);
+            cursor:pointer;
+            font-size:44px;font-weight:800;
+            text-align:center;vertical-align:middle;
+            transition:background 0.15s;
+            position:relative;
+        }
+        #TicTacToeBoard .box:hover{background:var(--surface2)}
+        #TicTacToeBoard .box.x-mark{color:var(--x-color)}
+        #TicTacToeBoard .box.o-mark{color:var(--o-color)}
+        #TicTacToeBoard .box.winner-cell{background:rgba(212,245,66,0.08)}
+
+        /* SCOREBOARD */
+        #scoreBoard{
+            width:100%;border-collapse:collapse;
+            background:var(--surface);
+            border:1px solid var(--border);border-radius:6px;overflow:hidden;
+        }
+        #scoreBoard .score{
+            padding:12px;text-align:center;
+            border:1px solid var(--border);
+            font-family:'DM Mono',monospace;
+            font-size:13px;color:var(--muted2);
+        }
+        #scoreBoard #XTag,#scoreBoard #OTag{font-size:16px;font-weight:800}
+        #scoreBoard #XTag{color:var(--x-color)}
+        #scoreBoard #OTag{color:var(--o-color)}
+        #scoreBoard #tieTag{color:var(--muted2)}
+        #scoreBoard #XScore,#scoreBoard #OScore,#scoreBoard #tieScore{
+            font-size:22px;font-weight:800;color:var(--text);
+        }
+
+        /* FOOTER */
+        footer{
+            position:relative;z-index:1;
+            border-top:1px solid var(--border);padding:18px 30px;
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        .footer-copy{
+            font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);
+        }
+        .footer-copy a{color:var(--accent);text-decoration:none}
+        .footer-dev{
+            font-family:'DM Mono',monospace;font-size:11px;
+            color:var(--muted);text-decoration:none;
+            display:flex;align-items:center;gap:6px;transition:color 0.2s;
+        }
+        .footer-dev:hover{color:var(--accent)}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+        @media(max-width:500px){
+            nav{padding:12px 16px}
+            #TicTacToeBoard .box{width:90px;height:90px;font-size:34px}
+            footer{flex-direction:column;gap:10px;text-align:center}
+        }
+        @media(max-width:360px){
+            #TicTacToeBoard .box{width:74px;height:74px;font-size:28px}
         }
     </style>
 </head>
 <body>
-    <!-- Your HTML content here -->
+<div class="grid-bg" aria-hidden="true"></div>
 
+<nav>
+    <a href="/" class="nav-brand">game.<span>samarthags</span>.in</a>
+    <div class="nav-right">
+        <a href="/" class="nav-home"><i class="fa fa-home"></i> Home</a>
+    </div>
+</nav>
+
+<div class="page">
+
+    <!-- ── WAITING / LOADING STATE ── -->
+    <div id="loadingContainer">
+        <div id="searchingContainer">
+            <div class="room-code-wrap">
+                <p class="room-code-label">Your Room Code</p>
+                <div id="roomId">——</div>
+            </div>
+
+            <h2 class="waiting-title">Share &amp; Wait</h2>
+            <div id="searchState">
+                Waiting for your friend
+                <span class="dots">
+                    <span>·</span><span>·</span><span>·</span>
+                </span>
+            </div>
+
+            <button id="menuBtn" class="copy-btn" type="button">
+                <i class="fa fa-copy"></i> Copy Code
+            </button>
+            <p class="share-hint">Send this code to your friend so they can join</p>
+        </div>
+    </div>
+
+    <!-- ── GAME STATE ── -->
     <div id="gameContainer">
-        <!-- Your game container content here -->
-        <table class="table-bordered" id="TicTacToeBoard">
+        <div id="gameInfo">
+            <div id="player">You are <strong>—</strong></div>
+            <div id="gameState">—</div>
+            <div id="turn">—</div>
+        </div>
+
+        <table id="TicTacToeBoard">
             <tr>
                 <td onclick="boxClick(this)" class="box" id="1"></td>
                 <td onclick="boxClick(this)" class="box" id="2"></td>
@@ -56,12 +292,8 @@
                 <td onclick="boxClick(this)" class="box" id="9"></td>
             </tr>
         </table>
-        <div id="gameInfo">
-            <div id="player"></div>
-            <div id="gameState"></div>
-            <div id="turn"></div>
-        </div>
-        <table class="table-bordered" id="scoreBoard">
+
+        <table id="scoreBoard">
             <tr>
                 <td id="XTag" class="score">X</td>
                 <td id="tieTag" class="score">Tie</td>
@@ -73,52 +305,53 @@
                 <td class="score" id="OScore">0</td>
             </tr>
         </table>
-        <form action="/">
-        </form>
     </div>
 
-    <!-- Loading container -->
-    <div id="loadingContainer">
-        <!-- Your loading container content here -->
-        <div id="searchingContainer">
-            <div id="searchingText">
-                <div id="roomId"></div>
-                <h1 style="font-variant: small-caps;">Share the above code to your 🤝</h1>
-                <div id="searchState" style="font-variant: small-caps;">Waiting for your friend ......</div>
-            </div>
-            <form action="/">
-                <div class="menuBtnContainer">
-                    <button id="menuBtn" class="menuBtn loadingMenuBtn btn btn-info" type="button" style="font-variant: small-caps;">Copy Code</button>
-                </div>
-            </form>
-        </div>
-    </div>
+</div><!-- /.page -->
 
-    <!-- Footer -->
-    <footer style="font-variant: small-caps; font-size: 12px; color: #555; font-family: 'Verdana', sans-serif;">
-        Made With 💙 By <a href="https://samarthags.in" target="_blank">Samartha Gs</a>
-    </footer>
+<footer>
+    <p class="footer-copy">Made with 💙 by <a href="https://samarthags.in" target="_blank" rel="noopener">Samartha Gs</a></p>
+    <a href="https://samarthags.in" class="footer-dev" target="_blank" rel="noopener">
+        <i class="fa fa-user"></i> samarthags.in
+    </a>
+</footer>
 
-    <!-- JavaScript files -->
-    <script src="/js/fastclick.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/loading.js"></script>
-    <script src="/js/game.js"></script>
+<!-- Game scripts -->
+<script src="/js/fastclick.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/loading.js"></script>
+<script src="/js/game.js"></script>
 
-    <script>
-        // Function to copy the room ID to clipboard
-        function copyRoomID() {
-            var roomID = document.getElementById('roomId').innerText;
+<script>
+    // Copy room code to clipboard with visual feedback
+    function copyRoomID() {
+        var roomID = document.getElementById('roomId').innerText.trim();
+        if (!roomID || roomID === '——') return;
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(roomID).then(showCopied);
+        } else {
             var dummy = document.createElement("textarea");
             document.body.appendChild(dummy);
             dummy.value = roomID;
             dummy.select();
             document.execCommand("copy");
             document.body.removeChild(dummy);
+            showCopied();
         }
+    }
 
-        // Attach the copyRoomID function to the menu button
-        document.getElementById('menuBtn').onclick = copyRoomID;
-    </script>
+    function showCopied() {
+        var btn = document.getElementById('menuBtn');
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="fa fa-check"></i> Copied!';
+        setTimeout(function(){
+            btn.classList.remove('copied');
+            btn.innerHTML = '<i class="fa fa-copy"></i> Copy Code';
+        }, 2000);
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', copyRoomID);
+</script>
 </body>
 </html>

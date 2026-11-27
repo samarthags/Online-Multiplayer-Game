@@ -217,12 +217,11 @@ form{
     text-align: center;
 }
 #roomId {
-	font-size: 56px; /* Default font size */
-	cursor: pointer; /* Change cursor to pointer on hover */
-}
+	font-size: 56px; 
+	cursor: pointer; 
 
 h1 {
-    font-size: 10px; /* Default font size */
+    font-size: 10px; 
 }
 
 

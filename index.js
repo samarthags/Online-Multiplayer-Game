@@ -44,7 +44,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-//This sets the combination of what letter each player will get
+
 function assignLetter() {
     number = getRandomInt(0, 1);
     if (number == 0) {
@@ -55,7 +55,7 @@ function assignLetter() {
     return players;
 }
 
-//This sets the combination of who will start the game
+
 function assignTurn() {
     number = getRandomInt(0, 1);
     if (number == 0) {
@@ -66,8 +66,7 @@ function assignTurn() {
     return turn;
 }
 
-//This is when you don't have the playerData and you only have the player Id.
-//This returns the whole player data when only the playerId is available
+
 function findOtherPlayer(playerId) {
     for (var room in gameRooms) {
         for (var i = 0; i < gameRooms[room].length; i++) {
@@ -79,15 +78,11 @@ function findOtherPlayer(playerId) {
     }
 }
 
-//This is when you have the playerData
+
 function getOtherPlayer(player) {
     var playerData = gameRooms[player.roomId];
 
-    //console.log("\nGame Rooms:")
-    //console.log(gameRooms)
-
-    //console.log("\nRoom ID:")
-    //console.log(player.roomId)
+   
 
     var otherPlayer;
 
@@ -110,11 +105,11 @@ function findPlayerRoom(playerId) {
         }
     }
 
-    //This means the player does not have a room
+   
     return false;
 }
 
-//This is used to switch who starts the game at every new game
+
 function randomizePlayerTurn(playerData) {
     turn = assignTurn();
 
@@ -161,8 +156,7 @@ randomGame = initStartValues();
 gameRooms = {};
 
 io.on('connection', function(socket) {
-    //console.log("\nConnection")
-
+   
     if (gameType == "random") {
         var joinInfo = {
             id: socket.id,
@@ -271,15 +265,14 @@ io.on('connection', function(socket) {
         }
     });
 
-    //////////////
-    //DISCONNECT//
-    //////////////
+  
+    
     socket.on('disconnect', function() {
-        //console.log("\nDisconnect")
+        
 
         removePlayerFromRoom(socket.id);
 
-        //This means the player is alone as he does not have a room
+        
         if (!findPlayerRoom(socket.id)) {
             randomGame = initStartValues();
         } else if (!(gameRooms[findPlayerRoom(socket.id)] == undefined)) {
@@ -298,11 +291,7 @@ io.on('connection', function(socket) {
     });
 });
 
-//Server configuration stuff
 
-
-//Same as above, but with port
-//If you want to load on localhost onto a different port, change 4000 to whatever port you please
 const port = process.env.PORT || 4000;
 http.listen(port, "0.0.0.0", function() {
     console.log(`Samartha Server Running at port ${port}`);

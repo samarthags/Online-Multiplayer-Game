@@ -1,14 +1,11 @@
-//Initializes variables
+
 var socket = io();
 
 playerData = null;
 yourTurn = null;
 canPlay = false;
 
-//////////////////////////////////////////////
-//fastclick.js initializer.			   	   //
-//This removes delay for mobile button tap//
-///////////////////////////////////////////
+
 if ('addEventListener' in document) {
     document.addEventListener('DOMContentLoaded', function() {
         FastClick.attach(document.body);
@@ -19,11 +16,7 @@ function refreshPage(){
 	location.reload()
 }
 
-/////////////////////////////////////////////////////////////////////
-//This happens initially when player is waiting for someone to join//
-/////////////////////////////////////////////////////////////////////
 
-//This rotates the spinny symbol
 degreeRotation = 0 
 function spinObject(){
 	if (document.getElementsByClassName("waitSpinner").length > 0){
@@ -37,10 +30,6 @@ function spinObject(){
 
 loop = setInterval(spinObject, 1000/60)
 
-///////////////////////////////////////////
-//These functions create various elements//
-///////////////////////////////////////////
-//This sandwiches text with the spinners
 function sandwichWithSpinners(elementId, sandwichText){
 	var waitSpinner1 = document.createElement("i")
 	var waitSpinner2 = document.createElement("i")
@@ -73,7 +62,7 @@ function createRematchButton(){
 	document.getElementById("gameState").appendChild(rematchBtn)
 }
 
-//This is the button that is made when opponent leaves to find a new game
+
 function createFindGameButton(){
 	var findGame = document.createElement("button")
 	findGame.setAttribute("class", "actionBtn btn btn-info")
@@ -86,12 +75,7 @@ function createFindGameButton(){
 	
 	document.getElementById("gameState").appendChild(findGame)
 }
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////
-//These functions deal with reseting the game board when a new game starts//
-////////////////////////////////////////////////////////////////////////////
 function resetBoxes(){
 	for (var i = 1; i < 10; i ++){
 		document.getElementById(i.toString()).innerHTML = ""
@@ -102,11 +86,7 @@ function resetScoreboard(){
 	document.getElementById("XScore").innerHTML = "0"
 	document.getElementById("tieScore").innerHTML = "0"
 	document.getElementById("OScore").innerHTML = "0"
-}
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
 
-//This function returns text based on if it is your turn
 function checkTurn(){
 	var turnText;
 	if (yourTurn){
@@ -122,16 +102,14 @@ function checkTurn(){
 	}
 }
 
-//////////////////////////////////////////////////////
-//These functions deal with start of the game things//
-//////////////////////////////////////////////////////
+
 socket.on("connect", function(){
-	//Resets boxes to make sure none are already there when page loads
+	
 	resetBoxes()
 	resetScoreboard()
 })
 
-//Gets player info and initializes turn, data and letter
+
 socket.on("playersJoined", function(joinInfo){
 	playerData = joinInfo
 	if (playerData.roomType == "private"){
@@ -151,10 +129,10 @@ function removeSearchScreen(){
 }
 
 function gameStart(){	
-	//Stops spinning the spinny things because they go away
+
 	clearInterval(loop)
 	
-	//This checks if the search screen is there before trying to remove it
+	
 	if (document.getElementById("loadingContainer")){
 		removeSearchScreen()
 	}
@@ -165,15 +143,14 @@ function gameStart(){
 	checkTurn()
 }
 
-//Runs once 2 people have joined
+
 socket.on("gameStart", function(){
 	gameStart()
 })
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
+
 
 function playerDisconnected(text){
-	//This clears any spinners if they are running
+	
 	clearInterval(loop)
 		
 	document.getElementById("gameState").innerHTML = text
@@ -189,7 +166,7 @@ socket.on("gameNotExist", function(roomId){
 	document.getElementById("searchState").innerHTML = "Room " + roomId + "Not Exist."
 })
 
-//Runs when other player disconnected
+
 socket.on("playerDisconnect", function(){
 	playerDisconnected("Friend Disconnected")
 })
@@ -209,14 +186,14 @@ socket.on("gameRestarted", function(newPlayerData){
 	gameStart()
 })
 
-//Updates the scoreboard based on what letter is entered
+
 function addLetterToScoreboard(letter){
 	var newScore = Number(document.getElementById(letter + "Score").innerHTML)
 	newScore ++
 	document.getElementById(letter + "Score").innerHTML = newScore
 }
 
-//Initializes things when the game ends
+
 function endGameInit(){
 	document.getElementById("turn").innerHTML = ""
 	createRematchButton()
@@ -235,7 +212,7 @@ socket.on("winnerDetermined", function(winner){
 	endGameInit()
 })
 
-//Changes class of box based on the letter that is in it
+
 function addClassByLetter(boxId, letter){
 	if (letter == "X"){
 		document.getElementById(boxId).className += " playerX" 
@@ -250,7 +227,7 @@ socket.on("tie", function(){
 	addLetterToScoreboard("tie")
 })
 
-//Switches turns and checks for winner
+
 socket.on("otherTurn", function(){
 	if (checkWinner()){
 		socket.emit("winner", playerData)
@@ -264,7 +241,7 @@ socket.on("otherTurn", function(){
 	}
 })
 
-//Switches turn to yours and also updates the board after last move
+
 socket.on("yourTurn", function(info){
 	document.getElementById(info.boxPlayed).innerHTML = info.letter
 	
@@ -274,7 +251,7 @@ socket.on("yourTurn", function(info){
 	checkTurn()
 })
 
-//This compares any amount of arguments you inputs
+
 function areEqual(){
 	var len = arguments.length;
 	for (var i = 1; i< len; i++){
@@ -305,7 +282,7 @@ function prepareGameState(){
 }
 
 function checkWinner(){
-	//Gets values of each box in the game
+	
 	box1 = document.getElementById("1").innerHTML
 	box2 = document.getElementById("2").innerHTML
 	box3 = document.getElementById("3").innerHTML
@@ -320,41 +297,41 @@ function checkWinner(){
 	
 	isWinner = false
 	
-	//Checks top 3 boxes
+	
 	if (areEqual(box1, box2, box3)){
 		isWinner = true
 	
-	//Checks middle 3 boxes
+	
 	}else if (areEqual(box4, box5, box6)){
 		isWinner = true
 	}
 	
-	//Checks bottom 3 boxes
+
 	else if (areEqual(box7, box8, box9)){
 		isWinner = true
 	}
 	
-	//Checks left vertical 3 boxes
+	
 	else if (areEqual(box1, box4, box7)){
 		isWinner = true
 	}
 	
-	//Checks middle vertical 3 boxes
+	
 	else if (areEqual(box2, box5, box8)){
 		isWinner = true
 	}
 	
-	//Checks right vertical 3 boxes
+	
 	else if (areEqual(box3, box6, box9)){
 		isWinner = true
 	}
 	
-	//Checks downward slope diagnol 3 boxes
+	
 	else if (areEqual(box1, box5, box9)){
 		isWinner = true
 	}
 	
-	//Checks downward slope diagnol 3 boxes
+	
 	else if (areEqual(box3, box5, box7)){
 		isWinner = true
 	}
